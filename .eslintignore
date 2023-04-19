@@ -1,0 +1,6 @@
+dist
+public
+jest-setup.ts
+vite-env.d.ts
+test
+vite.config.ts
