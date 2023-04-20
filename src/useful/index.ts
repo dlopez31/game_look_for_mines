@@ -1,4 +1,5 @@
 import { type CellEnum } from '../enums';
+import { type Positions } from '../interfaces';
 
 export const bombQuantity = (
 	percentage: number,
@@ -49,37 +50,42 @@ export const initialIterator = (index: number): number =>
 export const lastIterator = (index: number, maxLength: number): number =>
 	index === maxLength - 1 ? index : index + 1;
 
+export const getIndexIterator = (
+	rowPosition: number,
+	columnPosition: number,
+	totalLength: number
+): Positions => {
+	return {
+		rowInit: initialIterator(rowPosition),
+		rowEnd: lastIterator(rowPosition, totalLength),
+		columnInit: initialIterator(columnPosition),
+		columnEnd: lastIterator(columnPosition, totalLength),
+	};
+};
+
 export const cellSelection = (
 	rowPosition: number,
 	columnPosition: number,
 	currentBooleanGrid: boolean[][]
 ): number => {
-	let cellImage: number = -10;
 	if (currentBooleanGrid[rowPosition][columnPosition]) {
-		cellImage = 11;
-	} else {
-		const rowInitiator = initialIterator(rowPosition);
-		const rowStopper = lastIterator(rowPosition, currentBooleanGrid.length);
-		const columnInitiator = initialIterator(columnPosition);
-		const columnStopper = lastIterator(
-			columnPosition,
-			currentBooleanGrid.length
-		);
-		let bombCounter = 0;
-		for (let i = rowInitiator; i <= rowStopper; i++) {
-			for (let j = columnInitiator; j <= columnStopper; j++) {
-				if (
-					currentBooleanGrid[i][j] &&
-					i < currentBooleanGrid.length &&
-					j < currentBooleanGrid.length
-				) {
-					bombCounter += 1;
-				}
+		return 11;
+	}
+	const gridLength = currentBooleanGrid.length;
+	const { rowInit, rowEnd, columnInit, columnEnd } = getIndexIterator(
+		rowPosition,
+		columnPosition,
+		gridLength
+	);
+	let bombCounter = 0;
+	for (let i = rowInit; i <= rowEnd; i++) {
+		for (let j = columnInit; j <= columnEnd; j++) {
+			if (currentBooleanGrid[i][j] && i < gridLength && j < gridLength) {
+				bombCounter += 1;
 			}
 		}
-		cellImage = bombCounter;
 	}
-	return cellImage;
+	return bombCounter;
 };
 
 export const getOpenCells = (grid: CellEnum[][]): number => {

@@ -1,18 +1,19 @@
 # Solution challenge search for mines
 
 ## Project created with:
+
 1. React vite
 1. TypeScript
 1. Talwindcss
 1. For tests:
 
-   + jest
-   +testing-library
+   - jest
+     +testing-library
 
 1. For the codio format:
 
-   + Prettier
-   + Eslint
+   - Prettier
+   - Eslint
 
 ## Test it in Production:
 
@@ -26,6 +27,7 @@ Runs the app in the development mode.\
 Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
 
 ## Run test units
+
 ### `npm run test`
 
 ## Formatting with prettier
@@ -33,4 +35,5 @@ Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
 ### `npm run format`
 
 ## Observing errors with eslint
+
 ### `npm run lint`

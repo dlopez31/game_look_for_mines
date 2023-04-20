@@ -11,7 +11,6 @@ export interface GameState {
 	bombsOnGrid: number;
 	currentMineRate: number;
 	currentGridSize: number;
-	lostStatus: boolean;
 	isOpen: boolean;
 	message: string;
 	title: string;
@@ -49,4 +48,11 @@ export interface UseGame {
 	isOpen: boolean;
 	message: string;
 	title: string;
+}
+
+export interface Positions {
+	rowInit: number;
+	rowEnd: number;
+	columnInit: number;
+	columnEnd: number;
 }

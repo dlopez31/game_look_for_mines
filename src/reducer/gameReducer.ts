@@ -12,14 +12,14 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
 		case ActionGame.SET_GRID:
 			return {
 				...state,
-				grid: payload,
+				grid: payload.grid,
+				mines: payload.mines,
 			};
-		case ActionGame.SET_MINE:
-			return { ...state, mines: payload };
 		case ActionGame.SET_SCORE:
 			return {
 				...state,
 				score: payload.score,
+				grid: payload.grid,
 			};
 		case ActionGame.SET_START_GAME:
 			return {
@@ -28,7 +28,6 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
 				face: payload.face,
 				booleanGrid: payload.booleanGrid,
 				bombsOnGrid: payload.bombsOnGrid,
-				lostStatus: payload.lostStatus,
 				mines: payload.mines,
 				score: payload.score,
 				isOpen: payload.isOpen,
@@ -36,7 +35,6 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
 		case ActionGame.SET_GAME_OVER:
 			return {
 				...state,
-				lostStatus: payload.lostStatus,
 				grid: payload.grid,
 			};
 		case ActionGame.SET_END_GAME:

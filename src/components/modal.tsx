@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import { type AlertModalProps } from '../interfaces';
 
 export const AlertModal = ({
@@ -7,13 +6,15 @@ export const AlertModal = ({
 	onDismiss,
 }: AlertModalProps): JSX.Element => {
 	return (
-		<Fragment>
+		<>
 			<div className='fixed z-10 inset-0 bg-black opacity-50 dark:bg-gray-900'></div>
 			<div className='md:animate-[bounce_8s_ease-in-out_infinite]  fixed z-20 inset-0 overflow-y-auto container mx-auto px-20'>
-				<div className='flex items-center justify-center min-h-screen'>
+				<div
+					className='flex items-center justify-center min-h-screen'
+					onClick={onDismiss}
+				>
 					<div className='bg-[#202020] opacity-80 dark:bg-gray-800 rounded-2xl border-2 w-full'>
 						<div className='px-6 py-4'>
-							{/* Modal title */}
 							<div className='text-8xl font-mono italic font-bold text-white'>
 								{title}
 							</div>
@@ -32,6 +33,6 @@ export const AlertModal = ({
 					</div>
 				</div>
 			</div>
-		</Fragment>
+		</>
 	);
 };

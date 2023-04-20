@@ -15,7 +15,6 @@ export enum CellEnum {
 }
 
 export enum ActionGame {
-	SET_MINE = 'mine',
 	SET_GRID = 'grid',
 	SET_SCORE = 'score',
 	SET_FACE = 'face',

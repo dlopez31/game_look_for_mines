@@ -20,7 +20,6 @@ export const initialize: GameState = {
 	bombsOnGrid: 0,
 	currentMineRate: 0.2,
 	currentGridSize: size,
-	lostStatus: false,
 	isOpen: false,
 	message: '',
 	title: '',

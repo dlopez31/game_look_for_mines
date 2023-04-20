@@ -20,9 +20,8 @@ import {
 	calculateScore,
 	allOfUsAreDead,
 	flagFeature,
-	initialIterator,
-	lastIterator,
 	getOpenCells,
+	getIndexIterator,
 } from '../useful';
 
 export const useGame = (): UseGame => {
@@ -33,7 +32,6 @@ export const useGame = (): UseGame => {
 		bombsOnGrid,
 		currentMineRate,
 		currentGridSize,
-		lostStatus,
 		grid,
 		mines,
 		score,
@@ -59,8 +57,6 @@ export const useGame = (): UseGame => {
 			payload: {
 				grid: initializeGrid(),
 				face: 'default',
-				emptyCells: 0,
-				lostStatus: false,
 				bombsOnGrid: bombQuantity(currentMineRate, initializeGrid()),
 				booleanGrid: bombPosition(
 					bombQuantity(currentMineRate, initializeGrid()),
@@ -74,91 +70,84 @@ export const useGame = (): UseGame => {
 	};
 
 	const handleOnclick = (position: [number, number]): void => {
-		if (!lostStatus) {
-			grid[position[0]][position[1]] = cellSelection(
-				...([position[0]] as const),
-				...([position[1]] as const),
-				booleanGrid
+		const gridCopy = openCells(position);
+		const openCell = getOpenCells(gridCopy);
+		const currentScore = calculateScore(booleanGrid, openCell, bombsOnGrid);
+
+		dispatch({
+			type: ActionGame.SET_SCORE,
+			payload: {
+				score: currentScore,
+				grid: gridCopy,
+			},
+		});
+		if (booleanGrid[position[0]][position[1]]) {
+			endGame(false);
+		}
+	};
+
+	const openCells = (position: [number, number]): number[][] => {
+		const gridCopy = [...grid];
+		gridCopy[position[0]][position[1]] = cellSelection(
+			position[0],
+			position[1],
+			booleanGrid
+		);
+		if (gridCopy[position[0]][position[1]] === 11) {
+			return allOfUsAreDead(position[0], position[1], gridCopy, booleanGrid);
+		}
+		if (gridCopy[position[0]][position[1]] === 0) {
+			const { rowInit, rowEnd, columnInit, columnEnd } = getIndexIterator(
+				position[0],
+				position[1],
+				booleanGrid.length
 			);
-			const result = grid[position[0]][position[1]];
-			if (result === 11) {
-				dispatch({
-					type: ActionGame.SET_GAME_OVER,
-					payload: {
-						lostStatus: true,
-						grid: allOfUsAreDead(
-							...([position[0]] as const),
-							...([position[1]] as const),
-							grid,
-							booleanGrid
-						),
-					},
-				});
-				endGame(false);
-			} else {
-				if (result === 0) {
-					openAutomatic(position);
-				}
-				const openCell = getOpenCells(grid);
-				const currentScore = calculateScore(booleanGrid, openCell, bombsOnGrid);
-
-				dispatch({
-					type: ActionGame.SET_SCORE,
-					payload: {
-						score: currentScore,
-					},
-				});
-			}
-		}
-	};
-
-	const openAutomatic = (position: [number, number]): void => {
-		const rowInitiator = initialIterator(position[0]);
-		const rowStopper = lastIterator(position[0], booleanGrid.length);
-		const columnInitiator = initialIterator(position[1]);
-		const columnStopper = lastIterator(position[1], booleanGrid.length);
-		openCells(rowInitiator, rowStopper, columnInitiator, columnStopper);
-	};
-
-	const openCells = (
-		rowInit: number,
-		rowEnd: number,
-		columnInit: number,
-		columnEnd: number
-	): void => {
-		for (let i = rowInit; i <= rowEnd; i++) {
-			for (let j = columnInit; j <= columnEnd; j++) {
-				if (grid[i][j] < 0) {
-					grid[i][j] = cellSelection(i, j, booleanGrid);
+			for (let i = rowInit; i <= rowEnd; i++) {
+				for (let j = columnInit; j <= columnEnd; j++) {
+					if (gridCopy[i][j] < 0) {
+						gridCopy[i][j] = cellSelection(i, j, booleanGrid);
+						if (grid[i][j] === 0) {
+							openCells([i, j]);
+						}
+					}
 				}
 			}
 		}
+		return gridCopy;
 	};
 
 	const handleOnMouseDown = (): void => {
-		lostStatus || dispatch({ type: ActionGame.SET_FACE, payload: 'doubtful' });
+		dispatch({ type: ActionGame.SET_FACE, payload: 'doubtful' });
 	};
 
 	const handleOnMouseUp = (): void => {
-		lostStatus || dispatch({ type: ActionGame.SET_FACE, payload: 'default' });
+		dispatch({ type: ActionGame.SET_FACE, payload: 'default' });
 	};
 
 	const handleOnContextMenu = (position: [number, number]): void => {
-		if (!lostStatus) {
-			const gridCopy = [...grid];
-			if (grid[position[0]][position[1]] === -1) {
-				gridCopy[position[0]][position[1]] = CellEnum.Flag;
-			} else {
+		let counterBom = mines;
+		const gridCopy = [...grid];
+
+		if (gridCopy[position[0]][position[1]] === -1 && counterBom > 0) {
+			gridCopy[position[0]][position[1]] = CellEnum.Flag;
+			counterBom--;
+		} else {
+			if (gridCopy[position[0]][position[1]] === 9) {
 				gridCopy[position[0]][position[1]] = CellEnum.Hidden;
+				counterBom = counterBom >= 0 ? counterBom + 1 : 0;
 			}
-			dispatch({
-				type: ActionGame.SET_GRID,
-				payload: gridCopy,
-			});
-			const flagWinner = !!flagFeature(bombsOnGrid, booleanGrid, grid);
-			if (flagWinner) {
-				endGame(true);
-			}
+		}
+
+		dispatch({
+			type: ActionGame.SET_GRID,
+			payload: {
+				grid: gridCopy,
+				mines: counterBom,
+			},
+		});
+		const flagWinner = !!flagFeature(bombsOnGrid, booleanGrid, gridCopy);
+		if (flagWinner) {
+			endGame(true);
 		}
 	};
 
