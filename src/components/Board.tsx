@@ -23,15 +23,13 @@ export const Board = (): JSX.Element => {
 					<div className='mines-counter'>Mines: {mines}</div>
 					<div
 						onClick={onFaceClick}
-						className={`status-button status-button--${face}-game`}
-					></div>
+						className={`status-button status-button--${face}-game`}></div>
 					<div className='score'>Score: {score}</div>
 				</div>
 				{
 					<div
 						className='grid'
-						style={{ '--grid-cells-side': grid.length } as CSSProperties}
-					>
+						style={{ '--grid-cells-side': grid.length } as CSSProperties}>
 						{grid.length > 0 &&
 							grid.flatMap((row, i) =>
 								row.map((cell, j) => (

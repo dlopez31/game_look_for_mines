@@ -22,3 +22,10 @@ export enum ActionGame {
 	SET_GAME_OVER = 'gameOver',
 	SET_END_GAME = 'endGame',
 }
+
+export enum FacesEnum {
+	DEFAULT = 'default',
+	DOUBTFUL = 'doubtful',
+	LOST = 'lost',
+	WON = 'won',
+}

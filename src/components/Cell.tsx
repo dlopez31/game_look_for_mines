@@ -27,8 +27,7 @@ export const Cell = ({ cell, position }: ICell): JSX.Element => {
 						}}
 						onContextMenu={(e): void => {
 							handleRightClick(e, position);
-						}}
-					></div>
+						}}></div>
 				);
 			case CellEnum.Flag:
 				return (
@@ -40,8 +39,7 @@ export const Cell = ({ cell, position }: ICell): JSX.Element => {
 						}}
 						onContextMenu={(e): void => {
 							handleRightClick(e, position);
-						}}
-					></div>
+						}}></div>
 				);
 			case CellEnum.Mine:
 				return <div className={'cell cell__mine cell__mine--shown'} />;

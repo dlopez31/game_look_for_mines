@@ -1,10 +1,8 @@
 import { useReducer, useEffect } from 'react';
 import { gameReducer } from '../reducer/gameReducer';
-import { ActionGame, CellEnum } from '../enums';
+import { ActionGame, CellEnum, FacesEnum } from '../enums';
 import { type UseGame, type GameState } from '../interfaces';
 import {
-	FACE_LOST,
-	FACE_WON,
 	MESSAGE_LOST,
 	MESSAGE_WON,
 	TITLE_LOST,
@@ -60,7 +58,7 @@ export const useGame = (): UseGame => {
 			type: ActionGame.SET_START_GAME,
 			payload: {
 				grid: initializeGrid(),
-				face: 'default',
+				face: FacesEnum.DEFAULT,
 				bombsOnGrid: bombQuantity(currentMineRate, initializeGrid()),
 				mines: bombQuantity(currentMineRate, initializeGrid()),
 				score: 0,
@@ -72,7 +70,11 @@ export const useGame = (): UseGame => {
 	const handleOnclick = (position: [number, number]): void => {
 		const gridCopy = openCells(position);
 		const openCell = getOpenCells(gridCopy);
-		const currentScore = calculateScore(booleanGrid, openCell, bombsOnGrid);
+		const currentScore = calculateScore(
+			booleanGrid.length,
+			openCell,
+			bombsOnGrid
+		);
 
 		dispatch({
 			type: ActionGame.SET_SCORE,
@@ -93,10 +95,10 @@ export const useGame = (): UseGame => {
 			position[1],
 			booleanGrid
 		);
-		if (gridCopy[position[0]][position[1]] === 11) {
+		if (gridCopy[position[0]][position[1]] === CellEnum.ClickedMine) {
 			return allOfUsAreDead(position[0], position[1], gridCopy, booleanGrid);
 		}
-		if (gridCopy[position[0]][position[1]] === 0) {
+		if (gridCopy[position[0]][position[1]] === CellEnum.Cero) {
 			const { rowInit, rowEnd, columnInit, columnEnd } = getIndexIterator(
 				position[0],
 				position[1],
@@ -117,11 +119,11 @@ export const useGame = (): UseGame => {
 	};
 
 	const handleOnMouseDown = (): void => {
-		dispatch({ type: ActionGame.SET_FACE, payload: 'doubtful' });
+		dispatch({ type: ActionGame.SET_FACE, payload: FacesEnum.DOUBTFUL });
 	};
 
 	const handleOnMouseUp = (): void => {
-		dispatch({ type: ActionGame.SET_FACE, payload: 'default' });
+		dispatch({ type: ActionGame.SET_FACE, payload: FacesEnum.DEFAULT });
 	};
 
 	const handleOnContextMenu = (position: [number, number]): void => {
@@ -132,7 +134,7 @@ export const useGame = (): UseGame => {
 			gridCopy[position[0]][position[1]] = CellEnum.Flag;
 			counterBom--;
 		} else {
-			if (gridCopy[position[0]][position[1]] === 9) {
+			if (gridCopy[position[0]][position[1]] === CellEnum.Flag) {
 				gridCopy[position[0]][position[1]] = CellEnum.Hidden;
 				counterBom = counterBom >= 0 ? counterBom + 1 : 0;
 			}
@@ -155,7 +157,7 @@ export const useGame = (): UseGame => {
 		dispatch({
 			type: ActionGame.SET_END_GAME,
 			payload: {
-				face: status ? FACE_WON : FACE_LOST,
+				face: status ? FacesEnum.WON : FacesEnum.LOST,
 				title: status ? TITLE_WON : TITLE_LOST,
 				score,
 				message: status ? MESSAGE_WON : MESSAGE_LOST,

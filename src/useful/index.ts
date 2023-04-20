@@ -1,4 +1,4 @@
-import { type CellEnum } from '../enums';
+import { CellEnum } from '../enums';
 import { type Positions } from '../interfaces';
 
 export const bombQuantity = (
@@ -8,11 +8,12 @@ export const bombQuantity = (
 
 export const booleanGridCreation = (size: number): boolean[][] => {
 	const currentBooleanGrid = new Array(size);
-	for (let i = 0; i < currentBooleanGrid.length; i++) {
+	const gridLength = currentBooleanGrid.length;
+	for (let i = 0; i < gridLength; i++) {
 		currentBooleanGrid[i] = new Array(size);
 	}
-	for (let i = 0; i < currentBooleanGrid.length; i++) {
-		for (let j = 0; j < currentBooleanGrid.length; j++) {
+	for (let i = 0; i < gridLength; i++) {
+		for (let j = 0; j < gridLength; j++) {
 			currentBooleanGrid[i][j] = false;
 		}
 	}
@@ -23,11 +24,12 @@ export const bombPosition = (
 	bombQ: number,
 	currentBooleanGrid: boolean[][]
 ): boolean[][] => {
+	const gridLength = currentBooleanGrid.length;
 	let numerator = bombQ;
-	let denominator = currentBooleanGrid.length * currentBooleanGrid.length;
+	let denominator = gridLength * gridLength;
 	let bombActivation = false;
-	for (let i = 0; i < currentBooleanGrid.length; i++) {
-		for (let j = 0; j < currentBooleanGrid.length; j++) {
+	for (let i = 0; i < gridLength; i++) {
+		for (let j = 0; j < gridLength; j++) {
 			bombActivation = !!(
 				Math.random() <= numerator / denominator && numerator > 0
 			);
@@ -69,7 +71,7 @@ export const cellSelection = (
 	currentBooleanGrid: boolean[][]
 ): number => {
 	if (currentBooleanGrid[rowPosition][columnPosition]) {
-		return 11;
+		return CellEnum.ClickedMine;
 	}
 	const gridLength = currentBooleanGrid.length;
 	const { rowInit, rowEnd, columnInit, columnEnd } = getIndexIterator(
@@ -92,7 +94,7 @@ export const getOpenCells = (grid: CellEnum[][]): number => {
 	let openCells = 0;
 	for (let i = 0; i < grid.length; i++) {
 		for (let j = 0; j < grid[i].length; j++) {
-			if (grid[i][j] >= 0 && grid[i][j] !== 9) {
+			if (grid[i][j] >= 0 && grid[i][j] !== CellEnum.Flag) {
 				openCells = openCells + 1;
 			}
 		}
@@ -101,14 +103,10 @@ export const getOpenCells = (grid: CellEnum[][]): number => {
 };
 
 export const calculateScore = (
-	currentBooleanGrid: boolean[][],
+	gridLength: number,
 	counter: number,
 	bombQ: number
-): number =>
-	Math.ceil(
-		(100 / (currentBooleanGrid.length * currentBooleanGrid.length - bombQ)) *
-			counter
-	);
+): number => Math.ceil((100 / (gridLength * gridLength - bombQ)) * counter);
 
 export const allOfUsAreDead = (
 	rowPosition: number,
@@ -116,11 +114,12 @@ export const allOfUsAreDead = (
 	currentGrid: CellEnum[][],
 	currentBooleanGrid: boolean[][]
 ): CellEnum[][] => {
-	for (let i = 0; i < currentGrid.length; i++) {
-		for (let j = 0; j < currentGrid.length; j++) {
+	const gridLength = currentGrid.length;
+	for (let i = 0; i < gridLength; i++) {
+		for (let j = 0; j < gridLength; j++) {
 			if (i !== rowPosition || j !== columnPosition) {
 				if (currentBooleanGrid[i][j]) {
-					currentGrid[i][j] = 10;
+					currentGrid[i][j] = CellEnum.Mine;
 				}
 			}
 		}
@@ -133,14 +132,15 @@ export const flagFeature = (
 	currentBooleanGrid: boolean[][],
 	currentGrid: CellEnum[][]
 ): boolean => {
+	const gridLength = currentGrid.length;
 	let counter: number = 0;
 	let totalFlags: number = 0;
-	for (let i = 0; i < currentGrid.length; i++) {
-		for (let j = 0; j < currentGrid.length; j++) {
-			if (currentBooleanGrid[i][j] && currentGrid[i][j] === 9) {
+	for (let i = 0; i < gridLength; i++) {
+		for (let j = 0; j < gridLength; j++) {
+			if (currentBooleanGrid[i][j] && currentGrid[i][j] === CellEnum.Flag) {
 				counter += 1;
 			}
-			if (currentGrid[i][j] === 9) {
+			if (currentGrid[i][j] === CellEnum.Flag) {
 				totalFlags += 1;
 			}
 		}
