@@ -16,7 +16,6 @@ export const initialize: GameState = {
 	face: 'default',
 	score: 0,
 	mines: 0,
-	booleanGrid: [[]],
 	bombsOnGrid: 0,
 	currentMineRate: 0.2,
 	currentGridSize: size,

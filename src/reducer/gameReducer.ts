@@ -26,7 +26,6 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
 				...state,
 				grid: payload.grid,
 				face: payload.face,
-				booleanGrid: payload.booleanGrid,
 				bombsOnGrid: payload.bombsOnGrid,
 				mines: payload.mines,
 				score: payload.score,

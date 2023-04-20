@@ -1,20 +1,18 @@
+import { useGameContext } from '../context/GameContext';
 import { CellEnum } from '../enums';
-import { type ICell } from '../interfaces';
+import { type UseGame, type ICell } from '../interfaces';
 
-export const Cell = ({
-	cell,
-	position,
-	handleClickLeft,
-	handleOnMouseDown,
-	handleClickRight,
-}: ICell): JSX.Element => {
+export const Cell = ({ cell, position }: ICell): JSX.Element => {
+	const { handleOnclick, handleOnMouseDown, handleOnContextMenu }: UseGame =
+		useGameContext();
+
 	const handleRightClick = (e: any, position: [number, number]): void => {
 		e.preventDefault();
-		handleClickRight(position);
+		handleOnContextMenu(position);
 	};
 
 	const handleOnClick = (position: [number, number]): void => {
-		handleClickLeft(position);
+		handleOnclick(position);
 	};
 
 	const renderCell = (): JSX.Element => {

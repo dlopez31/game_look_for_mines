@@ -1,25 +1,20 @@
 import { type CSSProperties } from 'react';
-import { useGame } from '../hooks/useGame';
+import { useGameContext } from '../context/GameContext';
 import { Cell } from './Cell';
-import { AlertModal } from './modal';
 import { type UseGame } from '../interfaces';
+import { AlertModal } from './modal';
 import '../styles.css';
 
 export const Board = (): JSX.Element => {
 	const {
-		handleOnContextMenu,
-		handleOnMouseDown,
 		handleOnMouseUp,
-		handleOnclick,
 		onFaceClick,
 		grid,
 		mines,
 		face,
 		score,
 		isOpen,
-		message,
-		title,
-	}: UseGame = useGame();
+	}: UseGame = useGameContext();
 
 	return (
 		<div className='App' onMouseUp={handleOnMouseUp}>
@@ -40,26 +35,13 @@ export const Board = (): JSX.Element => {
 						{grid.length > 0 &&
 							grid.flatMap((row, i) =>
 								row.map((cell, j) => (
-									<Cell
-										key={`cell-${i}-${j}`}
-										cell={cell}
-										position={[i, j]}
-										handleClickLeft={handleOnclick}
-										handleClickRight={handleOnContextMenu}
-										handleOnMouseDown={handleOnMouseDown}
-									/>
+									<Cell key={`cell-${i}-${j}`} cell={cell} position={[i, j]} />
 								))
 							)}
 					</div>
 				}
 			</section>
-			{isOpen && (
-				<AlertModal
-					title={title}
-					message={message}
-					onDismiss={onFaceClick}
-				></AlertModal>
-			)}
+			{isOpen && <AlertModal />}
 		</div>
 	);
 };

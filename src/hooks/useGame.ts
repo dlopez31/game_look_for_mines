@@ -24,11 +24,11 @@ import {
 	getIndexIterator,
 } from '../useful';
 
+let booleanGrid: boolean[][];
 export const useGame = (): UseGame => {
 	const [state, dispatch] = useReducer(gameReducer, initialize);
 
 	const {
-		booleanGrid,
 		bombsOnGrid,
 		currentMineRate,
 		currentGridSize,
@@ -52,16 +52,16 @@ export const useGame = (): UseGame => {
 	}, [score]);
 
 	const onFaceClick = (): void => {
+		booleanGrid = bombPosition(
+			bombQuantity(currentMineRate, initializeGrid()),
+			booleanGridCreation(currentGridSize)
+		);
 		dispatch({
 			type: ActionGame.SET_START_GAME,
 			payload: {
 				grid: initializeGrid(),
 				face: 'default',
 				bombsOnGrid: bombQuantity(currentMineRate, initializeGrid()),
-				booleanGrid: bombPosition(
-					bombQuantity(currentMineRate, initializeGrid()),
-					booleanGridCreation(currentGridSize)
-				),
 				mines: bombQuantity(currentMineRate, initializeGrid()),
 				score: 0,
 				isOpen: false,

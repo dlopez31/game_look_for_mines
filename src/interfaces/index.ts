@@ -7,7 +7,6 @@ export interface GameState {
 	face: FaceType;
 	score: number;
 	mines: number;
-	booleanGrid: boolean[][];
 	bombsOnGrid: number;
 	currentMineRate: number;
 	currentGridSize: number;
@@ -19,22 +18,12 @@ export interface GameState {
 export interface ICell {
 	position: [number, number];
 	cell: CellEnum;
-	handleClickLeft: (position: [number, number]) => void;
-	handleClickRight: (position: [number, number]) => void;
-	handleOnMouseDown: () => void;
 }
 
 export interface Action {
 	type: string;
 	payload: any;
 }
-
-export interface AlertModalProps {
-	title: string;
-	message: string;
-	onDismiss: () => void;
-}
-
 export interface UseGame {
 	onFaceClick: () => void;
 	handleOnclick: (position: [number, number]) => void;
@@ -55,4 +44,8 @@ export interface Positions {
 	rowEnd: number;
 	columnInit: number;
 	columnEnd: number;
+}
+
+export interface ProviderProps {
+	children: JSX.Element | JSX.Element[];
 }
